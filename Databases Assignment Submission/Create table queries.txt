@@ -1,0 +1,123 @@
+CREATE TABLE passenger(
+	passenger_id int,
+	surname varchar(15),
+	first_name varchar(15),
+	home_address varchar(30),
+	phone_number varchar(12),
+	PRIMARY KEY (passenger_id)
+	);
+	/*
+	The passenger table is used to store information about the passengers on the flights.
+	Primary key : passenger_id
+	Foreign keys: none
+	*/
+
+CREATE TABLE flight(
+	flight_num int,
+	plane_num int,
+	pilot_num int,
+	flight_date date,
+	origin varchar(15),
+	destination varchar(15),
+	PRIMARY KEY (flight_num)
+	);
+	/*
+	The flight table is used to store information about individual flights.
+	Primary key : flight_num
+	Foreign keys: none
+	*/
+
+CREATE TABLE passenger_flight(
+	passenger_id int,
+	flight_num int,
+	PRIMARY KEY (passenger_id, flight_num),
+	FOREIGN KEY (passenger_id) references passenger (passenger_id),
+	FOREIGN KEY (flight_num) references flight (flight_num)
+	);
+	/*
+	The passenger_flight table is used as a bridge table between the passenger and flight tables. This allows multiplle passengers to be linked to one flight.
+	Primary keys: passenger_id, flight_num
+	Foreign keys: passenger_id, flight_num
+	*/
+
+CREATE TABLE staff(
+	emp_num int,
+	surname varchar(15),
+	first_name varchar(15),
+	home_address varchar(30),
+	phone_number varchar(12),
+	salary int,
+	PRIMARY KEY (emp_num)
+	);
+	/*
+	The staff table is used to store information about individual employees hired by the company.
+	Primary key : emp_num
+	Foreign keys: none
+	*/
+
+CREATE TABLE staff_flight(
+	emp_num int,
+	flight_num int,
+	PRIMARY KEY (emp_num, flight_num),
+	FOREIGN KEY (emp_num) references staff (emp_num),
+	FOREIGN KEY (flight_num) references flight (flight_num)
+	);
+	/*
+	The staff_flight table acts as a briddge table between the staff and flight tables. This allows multiplle members of staff to be assigned to the same flight.
+	Primary keys: emp_num, flight_num
+	Foreign keys: emp_num, flight_num
+	*/
+
+CREATE TABLE overlay(
+	city_name varchar(15),
+	flight_num int,
+	arr_time time,
+	dep_time time,
+	PRIMARY KEY (city_name, flight_num),
+	FOREIGN KEY (flight_num) REFERENCES flight (flight_num)
+	);
+	/*
+	The overlay table stores information about cities that flights may stop at if an overlay is necessary.
+	Primary keys: city_name, flight_num
+	Foreign key : flight_num
+	*/
+		
+CREATE TABLE plane(
+	serial_num int,
+	difficulty_rating int,
+	manufacturer varchar(15),
+	model varchar(10),
+	PRIMARY KEY (serial_num),
+	);
+	/*
+	The plane table stores information about all the planes that operate for the airline company.
+	Primary key : serial_num
+	Foreign keys: none
+	*/
+
+CREATE TABLE pilot(
+	pilot_num int,
+	emp_num int,
+	pilot_rank int,
+	PRIMARY KEY (pilot_num),
+	FOREIGN KEY (emp_num) REFERENCES staff (emp_num),
+	);
+	/*
+	The pilot table stores information about which members of staff are pilots. This information is separate from the staff table so that it is easier to allocate pilots to flights.
+	Primary key : pilot_num
+	Foreign key : emp_num
+	*/
+
+CREATE TABLE pilot_plane(
+	pilot_num int,
+	serial_num int,
+	difficulty_rating int,
+	PRIMARY KEY (pilot_num, serial_num),
+	FOREIGN KEY (pilot_num) references pilot (pilot_num),
+	FOREIGN KEY (serial_num) references plane (serial_num)
+	);
+	/*
+	The pilot_plane table acts as a bridge table between the pilot and plane tables. This allows the system to check which pilots are eligible to fly certain planes.
+	Primary keys: pilot_num, serial_num
+	Foreign keys: pilot_num, serial_num
+	*/
